@@ -1,8 +1,9 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\SupervisorController;
+use Inertia\Inertia;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,41 +15,15 @@ use App\Http\Controllers\SupervisorController;
 |
 */
 
-//Auth::routes();
-
 Route::get('/', function () {
-    return view('auth.login');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
+    return Inertia::render('Dashboard');
 })->name('dashboard');
-
-Route::group(['middleware' => ['auth']], function() {
- 
-    Route::get('/logout', [HomeController::class,'logout']);
- });
-
-route::get('/redirects',[HomeController::class,"index"]);
-
-Route::GET('Supervisor.edit/{id}', [SupervisorController::class,'edit']);
-
-Route::group(['middleware' => ['web']], function () {
-    Route::resource('/supervisor','SupervisorController');
-
-    Route::get('supervisorList',[SupervisorController::class,'show']);
-
-    Route::get('mana2',[SupervisorController::class,'edit']);
-
-    Route::get('projectTitleList','SupervisorController@title');
-});
-
-Route::get('studentDashboard', function () {
-    return view('studentDashboard');
-});
-
-Route::get('abc', function () {
-    return view('ManageTitle.AddTitle');
-});
-
-
